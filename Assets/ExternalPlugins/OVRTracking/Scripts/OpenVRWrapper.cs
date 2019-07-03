@@ -56,7 +56,7 @@ namespace sh_akira.OVRTracking
                             //ほかにもイベントはいろいろある
                     }
 
-                    if(OnOVREvent != null) OnOVREvent.Invoke(this, new OVREventArgs(pEvent));
+                    if (OnOVREvent != null) OnOVREvent.Invoke(this, new OVREventArgs(pEvent));
                 }
             }
         }

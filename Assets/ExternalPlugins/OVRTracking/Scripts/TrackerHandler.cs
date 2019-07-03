@@ -63,9 +63,9 @@ namespace sh_akira.OVRTracking
             }
         }
 
-        private void OnDestroy()
+        void OnApplicationQuit()
         {
-            //OpenVRWrapper.Instance.Close();
+            OpenVRWrapper.Instance.Close();
         }
     }
 
