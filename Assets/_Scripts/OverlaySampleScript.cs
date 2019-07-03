@@ -55,7 +55,7 @@ public class OverlaySampleScript : MonoBehaviour
 
     //取得元のRenderTexture
     public RenderTexture renderTexture;
-    public Transform RayTargetQuad;
+    public Transform RenderTarget;
 
     void Start()
     {
@@ -124,26 +124,13 @@ public class OverlaySampleScript : MonoBehaviour
         //オーバーレイが表示されている時
         if (overlay.IsOverlayVisible(overlayHandle))
         {
-            //HMD視点位置変換行列に書き込む。
-            //ここでは回転なし、平行移動ありのHUD的な状態にしている。
-            var wx = -0f;
-            var wy = -0f;
-            var wz = -0f;
 
-            pose.m0 = 1; pose.m1 = 0; pose.m2 = 0; pose.m3 = wx;
-            pose.m4 = 0; pose.m5 = 1; pose.m6 = 0; pose.m7 = wy;
-            pose.m8 = 0; pose.m9 = 0; pose.m10 = 1; pose.m11 = wz;
-
-            //回転行列を元に、HMDからの相対的な位置にオーバーレイを表示する。
-            //代わりにSetOverlayTransformAbsoluteを使用すると、ルーム空間に固定することができる
-            uint indexunTrackedDevice = 3;//0=HMD(他にControllerやTrackerにすることもできる)
-                                          //overlay.SetOverlayTransformTrackedDeviceRelative(overlayHandle, indexunTrackedDevice, ref pose);
-
-            var offset = new SteamVR_Utils.RigidTransform();
-            if (RayTargetQuad != null)
+            var vrcam = SteamVR_Render.Top();
+            var offset = new SteamVR_Utils.RigidTransform(vrcam.origin, RenderTarget);
+            if (RenderTarget != null)
             {
-                offset.pos = RayTargetQuad.transform.position;
-                offset.rot = RayTargetQuad.transform.rotation;
+                offset.pos = RenderTarget.transform.position;
+                offset.rot = RenderTarget.transform.rotation;
             }
             else
             {
@@ -152,6 +139,7 @@ public class OverlaySampleScript : MonoBehaviour
             }
             var t = offset.ToHmdMatrix34();
             overlay.SetOverlayTransformAbsolute(overlayHandle, SteamVR_Render.instance.trackingSpace, ref t);
+
             //RenderTextureが生成されているかチェック
             if (!renderTexture.IsCreated())
             {
