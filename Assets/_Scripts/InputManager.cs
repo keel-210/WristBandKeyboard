@@ -42,7 +42,7 @@ public class InputManager : MonoBehaviour
         texts[index].color = HighlightedColor;
         inputText = texts[index].text;
         VirtualKeyCode vk;
-        if (Input.GetButtonDown(TriggerInputName) && System.Enum.TryParse(inputText, out vk))
+        if (Input.GetButtonDown(TriggerInputName) && System.Enum.TryParse("VK_" + inputText, out vk))
             IS.Keyboard.KeyDown(vk);
     }
 }

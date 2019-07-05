@@ -55,7 +55,7 @@ public class OverlaySampleScript : MonoBehaviour
 
     //取得元のRenderTexture
     public RenderTexture renderTexture;
-    public Transform RenderTarget;
+    public Transform RenderTarget, HMDPos;
 
     void Start()
     {
@@ -125,12 +125,11 @@ public class OverlaySampleScript : MonoBehaviour
         if (overlay.IsOverlayVisible(overlayHandle))
         {
 
-            var vrcam = SteamVR_Render.Top();
-            var offset = new SteamVR_Utils.RigidTransform(vrcam.origin, RenderTarget);
+            var offset = new SteamVR_Utils.RigidTransform();
             if (RenderTarget != null)
             {
-                offset.pos = RenderTarget.transform.position;
-                offset.rot = RenderTarget.transform.rotation;
+                offset.pos = new Vector3(RenderTarget.position.x, RenderTarget.position.y, RenderTarget.position.z);
+                offset.rot = RenderTarget.rotation;
             }
             else
             {
@@ -138,6 +137,7 @@ public class OverlaySampleScript : MonoBehaviour
                 offset.rot = Quaternion.Euler(0, 0, 0);
             }
             var t = offset.ToHmdMatrix34();
+            t.m5 = -1;
             overlay.SetOverlayTransformAbsolute(overlayHandle, SteamVR_Render.instance.trackingSpace, ref t);
 
             //RenderTextureが生成されているかチェック
